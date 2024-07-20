@@ -1,33 +1,41 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { Routes, Route, json } from 'react-router-dom'
+import Home from './pages/Home'
+import Login from './pages/Login'
+import Dashboad from './pages/Dashboard'
+import Register from './pages/Register'
+import { useNavigate } from 'react-router-dom'
+
+export const Logout = () => {
+    const navigate = useNavigate()
+    const handleLogout = async () => {
+      let res = await fetch("http://localhost:8000/api/logout/", {
+        method: "POST",
+        headers: {
+          "Authorization": "token " + JSON.parse(localStorage.getItem('token')) 
+        }
+      })
+      localStorage.clear()
+      // localStorage.setItem('token', null)
+      // localStorage.setItem('user', null)
+      navigate("/")
+    }
+
+    return (
+      <button onClick={handleLogout} type="button" className="btn btn-secondary">Logout</button>
+    )
+}
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Routes>
+        <Route path='/' element={<Home />}></Route>
+        <Route path='/register' element={<Register />}></Route>
+        <Route path='/login'element={<Login />} ></Route>
+        <Route path='/dashboard' element={<Dashboad />}></Route>
+      </Routes>
     </>
   )
 }
